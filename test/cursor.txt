@@ -1,0 +1,21 @@
+Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit
+pain itself
+12.4
+14.55 345
+Hi I have 114.514 and 35 yuan left.
+1 2 3 4 5
+1
+2
+3
+4
+5
+a
+b
+c
+d
+e
+a b c d e
+.1
+.2
+.3
+0.1 0.2 0.3
