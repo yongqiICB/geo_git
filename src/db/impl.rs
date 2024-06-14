@@ -2,7 +2,7 @@ use std::collections::BTreeMap;
 
 use bytes::Bytes;
 
-use super::version_controller::{VersionId, Commit};
+use super::version_controller::{Commit, VersionId};
 use crate::geo::color::Color;
 
 #[derive(Clone, Debug)]
@@ -80,7 +80,7 @@ impl Db {
             let name = Bytes::copy_from_slice(v.name.as_bytes());
 
             match action {
-                super::version_controller::Action::Add => {
+                super::version_controller::ActionKind::Add => {
                     assert!(!self.rects.contains_key(&name));
                     let desc = v.desc.map(|x| Bytes::copy_from_slice(x.as_bytes()));
                     let geo = v.geo.unwrap();
@@ -93,7 +93,7 @@ impl Db {
                     self.rects
                         .insert(name.clone(), HistoryRect::new(self.version.clone(), rect));
                 }
-                super::version_controller::Action::Modify => {
+                super::version_controller::ActionKind::Modify => {
                     assert!(self.rects.contains_key(&name));
                     let histories = self.rects.get_mut(&name).unwrap();
                     let mut rect = histories.query(self.version.clone()).unwrap();
@@ -121,7 +121,7 @@ impl Db {
                         histories.update(self.version, rect);
                     }
                 }
-                super::version_controller::Action::Delete => {
+                super::version_controller::ActionKind::Delete => {
                     assert!(!self.rects.contains_key(&name));
                     let histories = self.rects.get_mut(&name).unwrap();
                     histories.del(self.version);

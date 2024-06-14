@@ -1,6 +1,6 @@
 use std::str::Chars;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Cursor<'a> {
     len_remaining: usize,
     chars: Chars<'a>,
@@ -17,6 +17,7 @@ pub struct Token {
 pub enum TokenKind {
     Str,
     Literal { kind: LiteralKind },
+    Semicolon,
     Eof,
 }
 

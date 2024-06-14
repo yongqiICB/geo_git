@@ -1,37 +1,46 @@
 use crate::geo::color::Color;
 
 pub struct Commit {
-    pub rect_actions: Vec<RectUpdater>,
+    pub rect_actions: Vec<Action>,
 }
 
 impl Commit {
-    pub fn build(rect_actions: Vec<RectUpdater>) -> Self {
+    pub fn new() -> Self {
+        Self {
+            rect_actions: vec![],
+        }
+    }
+
+    pub fn add_action(&mut self, action: Action) {
+        self.rect_actions.push(action);
+    }
+    pub fn build(rect_actions: Vec<Action>) -> Self {
         Self { rect_actions }
     }
 }
 
-pub struct RectUpdater {
-    pub action: Action,
+pub struct Action {
+    pub action: ActionKind,
     pub name: String,
     pub geo: Option<crate::geo::rect::Rect>,
     pub desc: Option<String>,
     pub color: Option<Color>,
 }
 
-impl RectUpdater {
+impl Action {
     pub fn build(
-        action: Action,
+        action: ActionKind,
         name: String,
         geo: Option<crate::geo::rect::Rect>,
         desc: Option<String>,
         color: Option<Color>,
     ) -> Self {
         match action {
-            Action::Add => {
+            ActionKind::Add => {
                 assert!(geo.is_some());
             }
-            Action::Modify => {}
-            Action::Delete => {
+            ActionKind::Modify => {}
+            ActionKind::Delete => {
                 assert!(geo.is_none());
                 assert!(desc.is_none());
                 assert!(color.is_none());
@@ -48,7 +57,7 @@ impl RectUpdater {
     }
 }
 
-pub enum Action {
+pub enum ActionKind {
     Add,
     Modify,
     Delete,
