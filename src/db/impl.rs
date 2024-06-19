@@ -81,7 +81,7 @@ impl Db {
 
             match action {
                 super::version_controller::ActionKind::Add => {
-                    assert!(!self.rects.contains_key(&name));
+                    assert!(self.rects.get_mut(&name).and_then(|history| history.query(self.version.clone())).is_none());
                     let desc = v.desc.map(|x| Bytes::copy_from_slice(x.as_bytes()));
                     let geo = v.geo.unwrap();
                     let rect = Rect {
@@ -94,7 +94,7 @@ impl Db {
                         .insert(name.clone(), HistoryRect::new(self.version.clone(), rect));
                 }
                 super::version_controller::ActionKind::Modify => {
-                    assert!(self.rects.contains_key(&name));
+                    assert!(self.rects.get_mut(&name).and_then(|history| history.query(self.version.clone())).is_none());
                     let histories = self.rects.get_mut(&name).unwrap();
                     let mut rect = histories.query(self.version.clone()).unwrap();
                     let mut diff = false;

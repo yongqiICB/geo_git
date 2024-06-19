@@ -1,6 +1,6 @@
 use crate::db::r#impl::Db;
-use eframe::egui::{self, Color32};
-use egui_plot::{Plot, PlotPoints, Polygon};
+use eframe::egui::{self, Color32, Stroke};
+use egui_plot::{Plot, PlotItem, PlotPoints, Polygon};
 pub struct ToPlot{
     pub x: Db,
     pub version: usize,
@@ -11,7 +11,7 @@ impl eframe::App for ToPlot {
         egui::CentralPanel::default().show(ctx, |ui| {
             let mut v = self.version;
             ui.horizontal(|ui| {
-                ui.add(egui::Slider::new(&mut v, 0..=100_000).text(" version"));
+                ui.add(egui::Slider::new(&mut v, 0..=600_000).text(" version"));
             });
             let polygons: Vec<_> = self.x.slice(crate::db::version_controller::VersionId(v as u32))
                 .rects
@@ -25,7 +25,7 @@ impl eframe::App for ToPlot {
                     let mut res = Polygon::new(pps)
                         .name(String::from_utf8_lossy(name.as_ref()));
                     if let Some(c) = geo.color {
-                        res = res.fill_color(Color32::from_rgb(c.r,c.g,c.b));
+                        res = res.stroke(Stroke::new(0.0, Color32::from_rgb(c.r,c.g,c.b)));
                     };
                     res
                 })

@@ -18,11 +18,4 @@
   - show differences between shapes.
 
 # Protocol
-GeoGit is based on scripts, which protocol is as follows:
-```
-AddRect $(Name) 124 122 144 135 $(OptionalImportance) $(OptionalHint) ;
-AddRect $(Name) 1 2 3 4 $(OptionalImportance) $(OptionalHint) ;
-UpdRect $(Name) 2 3 4 5 $(OptionalImportance) $(OptionalHint) ;
-DelRect $(Name) ;
-DelRect $(Name) ;
-```
+See an example in `test/formal.txt`.
