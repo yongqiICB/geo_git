@@ -3,7 +3,7 @@
 > With fancy GUIs.
 
 # Releases
-## Alpha 1.0
+## Alpha
 ### Shapes
 - Rectangles
 
@@ -12,7 +12,7 @@
   - Create
   - Move
   - Delete
-  - Differences between versions
+  - Differences between versions (x)
 - GUI
   - show all shapes, based on egui.
   - show differences between shapes.
