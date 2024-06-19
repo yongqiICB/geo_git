@@ -31,6 +31,7 @@ pub fn next_action(parser: &mut StringParser) -> Action {
             };
 
             if let TokenKind::Semicolon = peek_token(parser).kind {
+                next_semicolon(parser);
                 return res;
             }
 
@@ -42,8 +43,6 @@ pub fn next_action(parser: &mut StringParser) -> Action {
                 g: g as u8,
                 b: b as u8,
             });
-
-            next_semicolon(parser);
             res
         }
 

@@ -2,7 +2,9 @@ use std::ops::RangeBounds;
 
 use bytes::Bytes;
 
-use crate::lexer::Cursor;
+use crate::{db::version_controller::Commit, lexer::{Cursor, TokenKind}};
+
+use super::{rect::next_action, tokens::{next_ident, next_token, peek_token}};
 
 pub struct StringParser<'src> {
     /// Initial position, read-only.
@@ -24,5 +26,36 @@ impl<'src> StringParser<'src> {
 
     pub fn read_text(&self, rng: impl RangeBounds<usize>) -> bytes::Bytes {
         self.src.slice(rng)
+    }
+
+    pub fn parse(mut self) -> Vec<Commit> {
+        let mut res = vec![];        
+        loop {
+            let c = next_token(&mut self);
+
+            if c.kind == TokenKind::Eof {
+                break;
+            }
+
+            let mut commit = Commit::new();
+            'in_commit: loop {
+                let c = peek_token(&mut self);
+
+                if c.kind == TokenKind::Str {
+                    let txt = self.read_text(c.start..c.end);
+                    match txt.to_ascii_uppercase().as_slice() {
+                        b"COMMIT" => break 'in_commit,
+                        _ => {},
+                    }
+                } else if c.kind == TokenKind::Eof {
+                    break;
+                }
+
+                let action = next_action(&mut self);
+                commit.add_action(action);
+            }
+            res.push(commit);
+        }
+        res
     }
 }

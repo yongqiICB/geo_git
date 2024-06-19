@@ -4,30 +4,32 @@ use std::str::Chars;
 pub struct Cursor<'a> {
     len_remaining: usize,
     chars: Chars<'a>,
-    prev: char,
+    pub len: usize,
 }
 
 #[derive(Debug)]
 pub struct Token {
     pub kind: TokenKind,
+    pub start: usize,
+    pub end: usize,
     pub len: u32,
 }
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum TokenKind {
     Str,
-    Literal { kind: LiteralKind },
+    Literal { val: f64 },
     Semicolon,
     Eof,
 }
 
 impl Token {
     fn new(kind: TokenKind, len: u32) -> Token {
-        Token { kind, len }
+        Token { kind, len, start: 0,end: 0 }
     }
 }
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum LiteralKind {
     Int,
     Float,
@@ -39,25 +41,32 @@ impl<'a> Cursor<'a> {
     pub(crate) fn advance_token(&mut self) -> Token {
         self.eat_while(|x| x.is_whitespace());
         self.reset_pos_within_token();
+        let start = self.len - self.len_remaining;
         let first_char = self.first();
         let token_kind = match first_char {
             _c @ '0'..='9' => {
-                let literal_kind = self.number();
-                TokenKind::Literal { kind: literal_kind }
+                let val = self.number();
+                TokenKind::Literal { val: val }
             }
             EOF_CHAR => {
                 return Token::new(TokenKind::Eof, 0);
+            }
+            ';' => {
+                self.bump();
+                TokenKind::Semicolon
             }
             _ => {
                 self.eat_identifier();
                 TokenKind::Str
             }
         };
+        let end = self.len - self.chars.as_str().len();
         let res = Token {
             kind: token_kind,
             len: self.pos_within_token(),
+            start: start,
+            end: end,
         };
-        self.reset_pos_within_token();
         res
     }
 
@@ -65,12 +74,11 @@ impl<'a> Cursor<'a> {
         Cursor {
             len_remaining: input.len(),
             chars: input.chars(),
-            prev: EOF_CHAR,
+            len: input.len(),
         }
     }
     pub(crate) fn bump(&mut self) -> Option<char> {
         let c = self.chars.next()?;
-        self.prev = c;
         Some(c)
     }
 
@@ -93,18 +101,24 @@ impl<'a> Cursor<'a> {
         }
     }
 
-    pub(crate) fn eat_demical_digits(&mut self) -> bool {
-        let mut has_digits = false;
+    pub(crate) fn eat_demical_digits(&mut self) -> Option<usize> {
+        let mut res = None;
         loop {
-            match self.first() {
+            let x = self.first();
+            match x {
                 '0'..='9' => {
-                    has_digits = true;
+                    let p = x as usize - '0' as usize;
+                    if res.is_none() {
+                        res = Some(p);
+                    } else {
+                        res = Some(res.unwrap() * 10 + p);
+                    }
                     self.bump();
                 }
                 _ => break,
             }
         }
-        has_digits
+        res
     }
 
     fn eat_identifier(&mut self) {
@@ -112,16 +126,23 @@ impl<'a> Cursor<'a> {
         self.eat_while(|x| !x.is_whitespace());
     }
 
-    pub(crate) fn number(&mut self) -> LiteralKind {
-        self.eat_demical_digits();
+    pub(crate) fn number(&mut self) -> f64 {
+        let mut res = self.eat_demical_digits().unwrap() as f64;
         match self.first() {
             '.' => {
                 self.bump();
-                self.eat_demical_digits();
-                return LiteralKind::Float;
+                let sub = self.eat_demical_digits().unwrap();
+                let mut real_sub = sub as f64;
+                while real_sub > 1.0 {
+                    real_sub = real_sub / 10.0;
+                }
+                if sub == 0 {
+                    res = res + real_sub;
+                }
             }
-            _ => return LiteralKind::Int,
+            _ => {}
         };
+        res
     }
 
     pub(crate) fn reset_pos_within_token(&mut self) {

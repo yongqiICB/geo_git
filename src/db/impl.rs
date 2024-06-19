@@ -122,7 +122,7 @@ impl Db {
                     }
                 }
                 super::version_controller::ActionKind::Delete => {
-                    assert!(!self.rects.contains_key(&name));
+                    assert!(self.rects.contains_key(&name));
                     let histories = self.rects.get_mut(&name).unwrap();
                     histories.del(self.version);
                 }

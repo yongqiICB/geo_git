@@ -4,7 +4,7 @@ pub struct Point {
     pub y: f64,
 }
 
-impl From<Point> for eframe::egui::widgets::plot::PlotPoint {
+impl From<Point> for egui_plot::PlotPoint {
     fn from(value: Point) -> Self {
         Self::new(value.x, value.y)
     }

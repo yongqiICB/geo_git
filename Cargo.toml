@@ -3,8 +3,15 @@ name = "geo_git"
 version = "0.1.0"
 edition = "2021"
 
+[[bin]]
+name = "parse"
+path = "bin/parse.rs"
+
 [dependencies]
 bytes = "1"
-eframe = "0.22.0"
+eframe = "0.27.0"
 project-root = "0.2.0"
 anyhow = "1.0"
+egui_plot = "0.27.0"
+tokio = { version = "1.38.0", features = ["full"] }
+clap = { version = "4.5.7", features = ["derive"] }
