@@ -4,7 +4,7 @@ use bytes::Bytes;
 
 use crate::{db::version_controller::Commit, lexer::{Cursor, TokenKind}};
 
-use super::{rect::next_action, tokens::{next_ident, next_token, peek_token}};
+use super::{rect::next_action, tokens::{next_token, peek_token}};
 
 pub struct StringParser<'src> {
     /// Initial position, read-only.

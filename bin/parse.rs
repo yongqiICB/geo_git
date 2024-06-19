@@ -1,4 +1,3 @@
-use anyhow::Context;
 use clap::Parser;
 use geo_git::{gui, public::parse};
 #[derive(Debug, Parser)]

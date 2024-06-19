@@ -1,13 +1,13 @@
 use crate::db::r#impl::Db;
 use eframe::egui::{self, Color32, Stroke};
-use egui_plot::{Plot, PlotItem, PlotPoints, Polygon};
+use egui_plot::{Plot, PlotPoints, Polygon};
 pub struct ToPlot{
     pub x: Db,
     pub version: usize,
 }
 
 impl eframe::App for ToPlot {
-    fn update(&mut self, ctx: &eframe::egui::Context, frame: &mut eframe::Frame) {
+    fn update(&mut self, ctx: &eframe::egui::Context, _frame: &mut eframe::Frame) {
         egui::CentralPanel::default().show(ctx, |ui| {
             let mut v = self.version;
             ui.horizontal(|ui| {
