@@ -1,6 +1,6 @@
 use bytes::Bytes;
 
-use crate::{db::{r#impl::Db, version_controller::VersionId}, lexer::Cursor, parser::r#impl::StringParser};
+use crate::{db::r#impl::Db, lexer::Cursor, parser::r#impl::StringParser};
 
 pub fn parse(x: String) -> Db {
     let mut db = Db::new();
@@ -15,7 +15,8 @@ pub fn parse(x: String) -> Db {
 }
 
 #[test]
-fn PP() {
+fn pp() {
+    use crate::db::version_controller::VersionId;
     use std::{io::Read, path::PathBuf, str::FromStr};
 
     let prj_rt = project_root::get_project_root().unwrap();
@@ -54,6 +55,7 @@ fn PP() {
 
 #[test]
 fn real_test() {
+    use crate::db::version_controller::VersionId;
     use std::{io::Read, path::PathBuf, str::FromStr};
 
     let prj_rt = project_root::get_project_root().unwrap();
