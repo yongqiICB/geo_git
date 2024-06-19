@@ -1,0 +1,10 @@
+COMMIT
+Addrect X 0 0 1 1 50 50 50 ;
+
+COMMIT
+Addrect Y 0 0 1 1 100 100 100 ;
+Delrect X ;
+
+COMMIT
+Addrect X 0 0 1 1 150 150 150 ;
+DelRect Y ;
