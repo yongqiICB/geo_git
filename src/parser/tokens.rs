@@ -40,10 +40,10 @@ pub fn next_literal(parser: &mut StringParser) -> Option<f64> {
 pub fn next_semicolon(parser: &mut StringParser) {
     let token = parser.cursor.advance_token();
     match token.kind {
-        crate::lexer::TokenKind::Eof => return,
+        crate::lexer::TokenKind::Eof => (),
         crate::lexer::TokenKind::Str => unreachable!("Requires a `;`. Found a string instead."),
         crate::lexer::TokenKind::Literal { val: _ } => unreachable!("Requires a `;`. Found a literal instead."),
-        crate::lexer::TokenKind::Semicolon => return,
+        crate::lexer::TokenKind::Semicolon => (),
     }
 }
 

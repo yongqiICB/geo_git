@@ -5,7 +5,7 @@ use crate::{db::r#impl::Db, lexer::Cursor, parser::r#impl::StringParser};
 pub fn parse(x: String) -> Db {
     let mut db = Db::new();
     let cursor = Cursor::new(&x);
-    let bytes = &Bytes::copy_from_slice(&x.as_bytes());
+    let bytes = &Bytes::copy_from_slice(x.as_bytes());
     let parser = StringParser::new(bytes, cursor);
     let commits = parser.parse();
     for c in commits {
@@ -21,7 +21,7 @@ fn pp() {
 
     let prj_rt = project_root::get_project_root().unwrap();
     let mut file =
-        std::fs::File::open(prj_rt.join(PathBuf::from_str("test/formal.txt").unwrap()))
+        std::fs::File::open(prj_rt.join(PathBuf::from_str("test/squeeze.txt").unwrap()))
             .unwrap();
     let mut raw_text = String::with_capacity(256);
     file.read_to_string(&mut raw_text).unwrap();

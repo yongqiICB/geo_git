@@ -57,8 +57,8 @@ pub fn next_action(parser: &mut StringParser) -> Action {
             };
 
             let mut literals = vec![];
-            while peek_token(&parser).kind != TokenKind::Semicolon
-                && peek_token(&parser).kind != TokenKind::Eof
+            while peek_token(parser).kind != TokenKind::Semicolon
+                && peek_token(parser).kind != TokenKind::Eof
             {
                 literals.push(next_literal(parser).unwrap());
             }

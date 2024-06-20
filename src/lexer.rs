@@ -46,7 +46,7 @@ impl<'a> Cursor<'a> {
         let token_kind = match first_char {
             _c @ '0'..='9' => {
                 let val = self.number();
-                TokenKind::Literal { val: val }
+                TokenKind::Literal { val }
             }
             EOF_CHAR => {
                 return Token::new(TokenKind::Eof, 0);
@@ -61,13 +61,13 @@ impl<'a> Cursor<'a> {
             }
         };
         let end = self.len - self.chars.as_str().len();
-        let res = Token {
+        
+        Token {
             kind: token_kind,
             len: self.pos_within_token(),
-            start: start,
-            end: end,
-        };
-        res
+            start,
+            end,
+        }
     }
 
     pub(crate) fn new(input: &'a str) -> Cursor<'a> {
@@ -134,10 +134,10 @@ impl<'a> Cursor<'a> {
                 let sub = self.eat_demical_digits().unwrap();
                 let mut real_sub = sub as f64;
                 while real_sub > 1.0 {
-                    real_sub = real_sub / 10.0;
+                    real_sub /= 10.0;
                 }
                 if sub == 0 {
-                    res = res + real_sub;
+                    res += real_sub;
                 }
             }
             _ => {}

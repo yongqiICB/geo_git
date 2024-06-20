@@ -19,6 +19,8 @@ impl VersionId {
         Self(self.0 + 1)
     }
 }
+
+#[derive(Debug)]
 pub struct HistoryRect(pub BTreeMap<VersionId, Option<Rect>>);
 
 impl HistoryRect {
@@ -40,8 +42,7 @@ impl HistoryRect {
         self.0
             .range(..=time)
             .last()
-            .map(|(_, r)| r.clone())
-            .flatten()
+            .and_then(|(_, r)| r.clone())
     }
 }
 
@@ -54,6 +55,12 @@ pub struct SlicedDb {
     pub version: VersionId,
     pub rects: BTreeMap<Bytes, Rect>,
 }
+impl Default for Db {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Db {
     pub fn new() -> Self {
         Self {
@@ -66,7 +73,9 @@ impl Db {
         let rects = self
             .rects
             .iter()
-            .filter_map(|(nid, hr)| hr.query(v).map(|x| (nid.clone(), x)))
+            .filter_map(|(nid, hr)| {
+                hr.query(v).map(|x| (nid.clone(), x))
+            })
             .collect();
 
         SlicedDb { version: v, rects }
@@ -81,7 +90,7 @@ impl Db {
 
             match action {
                 super::version_controller::ActionKind::Add => {
-                    assert!(self.rects.get_mut(&name).and_then(|history| history.query(self.version.clone())).is_none());
+                    assert!(self.rects.get_mut(&name).and_then(|history| history.query(self.version)).is_none());
                     let desc = v.desc.map(|x| Bytes::copy_from_slice(x.as_bytes()));
                     let geo = v.geo.unwrap();
                     let rect = Rect {
@@ -90,13 +99,12 @@ impl Db {
                         color: v.color,
                         desc,
                     };
-                    self.rects
-                        .insert(name.clone(), HistoryRect::new(self.version.clone(), rect));
+                    self.rects.entry(name.clone()).and_modify(|x| {x.update(self.version, rect.clone());}).or_insert(HistoryRect::new(self.version, rect));
                 }
                 super::version_controller::ActionKind::Modify => {
-                    assert!(self.rects.get_mut(&name).and_then(|history| history.query(self.version.clone())).is_none());
+                    assert!(!self.rects.get_mut(&name).and_then(|history| history.query(self.version)).is_none());
                     let histories = self.rects.get_mut(&name).unwrap();
-                    let mut rect = histories.query(self.version.clone()).unwrap();
+                    let mut rect = histories.query(self.version).unwrap();
                     let mut diff = false;
 
                     let desc = v.desc.map(|x| Bytes::copy_from_slice(x.as_bytes()));

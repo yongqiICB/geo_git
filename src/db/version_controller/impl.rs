@@ -4,6 +4,12 @@ pub struct Commit {
     pub rect_actions: Vec<Action>,
 }
 
+impl Default for Commit {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Commit {
     pub fn new() -> Self {
         Self {
