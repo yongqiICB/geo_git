@@ -1,6 +1,6 @@
 use crate::{
     db::version_controller::Action,
-    geo::{color::Color, point::Point, rect::Rect},
+    geo::{color::Color, line::Line, point::Point, rect::Rect},
     lexer::TokenKind,
 };
 
@@ -33,9 +33,6 @@ pub fn next_action(parser: &mut StringParser) -> Action {
             let mut numbers = [0.0, 0.0, 0.0];
             let mut cnt = 0;
             loop {
-                if cnt == 3 {
-                    break;
-                }
                 let next_token = peek_token(parser);
                 match next_token.kind {
                     TokenKind::Str | TokenKind::Eof => unimplemented!(),
@@ -49,7 +46,7 @@ pub fn next_action(parser: &mut StringParser) -> Action {
                     }
                 }
             }
-            match cnt {
+            match numbers.len() {
                 1 => {
                     res.gradient = Some(numbers[0] as f32);
                 }
@@ -112,6 +109,24 @@ pub fn next_action(parser: &mut StringParser) -> Action {
                 action: crate::db::version_controller::ActionKind::Delete,
                 name: String::from_utf8(name.to_vec()).unwrap(),
                 geo: crate::geo::shape::Shape::None,
+                desc: None,
+                color: None,
+                gradient: None,
+            }
+        }
+        b"ADDLINE" => {
+            let name = next_ident(parser).unwrap();
+            let llx = next_literal(parser).unwrap();
+            let lly = next_literal(parser).unwrap();
+            let urx = next_literal(parser).unwrap();
+            let ury = next_literal(parser).unwrap();
+            Action {
+                action: crate::db::version_controller::ActionKind::Add,
+                name: String::from_utf8(name.to_vec()).unwrap(),
+                geo: crate::geo::shape::Shape::Line(Line {
+                    ll: Point { x: llx, y: lly },
+                    ur: Point { x: urx, y: ury },
+                }),
                 desc: None,
                 color: None,
                 gradient: None,

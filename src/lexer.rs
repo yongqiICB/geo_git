@@ -25,7 +25,12 @@ pub enum TokenKind {
 
 impl Token {
     fn new(kind: TokenKind, len: u32) -> Token {
-        Token { kind, len, start: 0,end: 0 }
+        Token {
+            kind,
+            len,
+            start: 0,
+            end: 0,
+        }
     }
 }
 
@@ -61,7 +66,7 @@ impl<'a> Cursor<'a> {
             }
         };
         let end = self.len - self.chars.as_str().len();
-        
+
         Token {
             kind: token_kind,
             len: self.pos_within_token(),
