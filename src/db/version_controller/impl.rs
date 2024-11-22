@@ -23,7 +23,10 @@ impl Commit {
         self.rect_actions.push(action);
     }
     pub fn build(line_actions: Vec<Action>, rect_actions: Vec<Action>) -> Self {
-        Self { line_actions, rect_actions }
+        Self {
+            line_actions,
+            rect_actions,
+        }
     }
 }
 
@@ -35,7 +38,6 @@ pub struct Action {
     pub color: Option<Color>,
     pub gradient: Option<f32>,
 }
-
 
 pub enum ActionKind {
     Add,

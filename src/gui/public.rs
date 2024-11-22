@@ -36,7 +36,9 @@ impl eframe::App for ToPlot {
                     let mut res = Polygon::new(pps).name(String::from_utf8_lossy(name.as_ref()));
                     if let Some(c) = geo.color {
                         // res = res.fill_color(Color32::from_rgb(c.r / 4 * 3,c.g / 4 * 3,c.b / 4 * 3));
-                        res = res.stroke(Stroke::new(0.0, Color32::from_rgb(c.r, c.g, c.b))).fill_color(Color32::from_rgb(c.r, c.g, c.b));
+                        res = res
+                            .stroke(Stroke::new(0.0, Color32::from_rgb(c.r, c.g, c.b)))
+                            .fill_color(Color32::from_rgb(c.r, c.g, c.b));
                         res = res.highlight(true);
                     };
                     res
@@ -52,7 +54,8 @@ impl eframe::App for ToPlot {
                     let from = egui_plot::PlotPoint::new(geo.geo.ll.x, geo.geo.ll.y);
                     let to = egui_plot::PlotPoint::new(geo.geo.ur.x, geo.geo.ur.y);
                     let pps = PlotPoints::Owned(vec![from, to]);
-                    let mut res = egui_plot::Line::new(pps).name(String::from_utf8_lossy(name.as_ref()));
+                    let mut res =
+                        egui_plot::Line::new(pps).name(String::from_utf8_lossy(name.as_ref()));
                     if let Some(c) = geo.color {
                         res = res.stroke(Stroke::new(0.0, Color32::from_rgb(c.r, c.g, c.b)));
                         res = res.highlight(true);
@@ -72,8 +75,6 @@ impl eframe::App for ToPlot {
                     }
                 });
 
-
-                
             self.version = v;
         });
     }
