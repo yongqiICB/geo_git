@@ -19,3 +19,36 @@
 
 # Protocol
 See an example in `test/formal.txt`.
+
+[Commit ... ] See `Commit`
+
+## Commit
+```
+Commit
+[ Action ... ]
+```
+
+### Action
+```
+  <actiontype> <shape> [color] [gradient] ;
+```
+
+### Actiontype
+Actiontype is an ENUM which is
+```
+Add | Del | Upd
+```
+### Shape
+```
+<shapetype> <geom>
+```
+#### ShapeType
+`shapetype` is a enum 
+```
+Rect Line
+```
+#### Geom
+Each `geom` has its own 
+
+### Geom
+  f
