@@ -1,7 +1,11 @@
 # geo_git
-> A version control tools aiming for geometry shapes.
-> With fancy GUIs.
+A fast Rectangle Visualizer for massive objects
 
+## QuickStart
+The project aims to make people get know of the place of different objects from plain txt.
+
+For example, you have a vlsi design with thousands of cells. You have a `.def` file but, however, do not know what it looks like. 
+Geogit can quickly help you get a quick, obvious understanding of it. And you can know the history of each cells! Cool! 
 # Releases
 ## Alpha
 ### Shapes
